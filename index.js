@@ -5,6 +5,7 @@ import authRoutes from "./src/routes/auth.routes.js";
 import productRoutes from "./src/routes/product.routes.js"; // Assuming you have the product routes file
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
+import orderRoutes from "./src/routes/order.routes.js";
 
 dotenv.config();
 
@@ -18,6 +19,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use("/api/auth", authRoutes);
 app.use("/api/product", productRoutes);
+app.use("/api/order", orderRoutes);
 
 DBConnection();
 
