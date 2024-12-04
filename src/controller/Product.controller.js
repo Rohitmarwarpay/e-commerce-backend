@@ -1,30 +1,23 @@
 import Product from "../models/Product.model.js";
 
 export const createProduct = async (req, res) => {
-    // const products= req.body;
     try {
-        const { productName, image, price, category, description } = req.body;
+        const { productName, images, price, category, description } = req.body;
 
-        // Check if a product with the same name already exists
-
-        // const existingProduct = await Product.findOne({ productName });
-        // if (existingProduct) {
-        //     return res.status(400).json({
-        //         message: "Product with this name already exists. Please try another name."
-        //     });
-        // }
+        // If images is not an array, make it an array
+        const imageArray = Array.isArray(images) ? images : [images];
 
         const product = new Product({
             productName,
-            image,
+            images: imageArray,  // Updated field to images
             price,
             category,
             description
         });
 
         await product.save();
-        // const insertedProducts = await Product.insertMany(products);
-        res.status(201).json({ message: "Product added successfully", insertedProducts });
+
+        res.status(201).json({ message: "Product added successfully", product });
     } catch (error) {
         res.status(500).json({ message: "Failed to add product", error: error.message });
     }
