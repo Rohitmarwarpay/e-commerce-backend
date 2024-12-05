@@ -52,6 +52,36 @@ export const getProduct = async (req, res) => {
     }
 }
 
+export const updateProduct = async (req, res) => {
+    try {
+        const { productName, images, price, category, description } = req.body;
+
+        // If images is not an array, make it an array
+        const imageArray = Array.isArray(images) ? images : [images];
+
+        // Find the product by ID and update it
+        const updatedProduct = await Product.findByIdAndUpdate(
+            req.params.id,
+            {
+                productName,
+                images: imageArray,
+                price,
+                category,
+                description,
+            },
+            { new: true } // This option ensures the updated document is returned
+        );
+
+        if (!updatedProduct) {
+            return res.status(404).json({ message: "Product not found" });
+        }
+
+        res.status(200).json({ message: "Product updated successfully", updatedProduct });
+    } catch (error) {
+        res.status(500).json({ message: "Failed to update product", error: error.message });
+    }
+}
+
 export const deleteProduct = async (req, res) => {
     try {
         const product = await Product.findByIdAndDelete(req.params.id);
