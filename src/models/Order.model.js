@@ -44,11 +44,6 @@ const orderSchema = new mongoose.Schema(
             enum: ["pending", "completed", "failed"],
             default: "pending",
         },
-        paymentMethod: {
-            type: String,
-            enum: ["credit_card", "paypal", "cash_on_delivery"],
-            required: true,
-        },
         isDeleted:{
             type:Boolean,
             default:false,

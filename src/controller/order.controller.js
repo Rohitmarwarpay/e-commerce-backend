@@ -4,10 +4,7 @@ import Product from "../models/Product.model.js"; // Importing Product model to 
 // Create a new order
 export const createOrder = async (req, res) => {
     try {
-        const { customer, products, shippingAddress, paymentMethod } = req.body;
-        if(!JSON.parse(shippingAddress)){
-            return res.status(400).json({ message: "Invalid shipping address" });
-        }
+        const { customer, products, shippingAddress } = req.body;
 
         // Validate if products array is provided and has at least one product
         if (!products || products.length === 0) {
@@ -17,12 +14,10 @@ export const createOrder = async (req, res) => {
         // Calculate total amount by summing up the prices of products and their quantities
         let totalAmount = 0;
         for (let productItem of products) {
-            const product = await Product.findOne({ _id: productItem.product, isDeleted: false });
-            
+            const product = await Product.findById(productItem.product);
             if (!product) {
-                return res.status(400).json({ message: `Product not found or is deleted for ID: ${productItem.product}` });
+                return res.status(400).json({ message: `Product not found for ID: ${productItem.product}` });
             }
-
             totalAmount += product.price * productItem.quantity;
         }
 
@@ -31,7 +26,6 @@ export const createOrder = async (req, res) => {
             products,
             totalAmount,
             shippingAddress,
-            paymentMethod,
         });
 
         await newOrder.save();
@@ -41,13 +35,12 @@ export const createOrder = async (req, res) => {
     }
 };
 
-
 // Get all orders
 export const getOrders = async (req, res) => {
     try {
-        const orders = await Order.find({ isDeleted: false })  // Only non-deleted orders
-            .populate("customer", "name email")
-            .populate("products.product", "productName price image");
+        const orders = await Order.find({ isDeleted: false }) // Exclude deleted orders
+            .populate("customer", "name email") // Populating customer details (optional)
+            .populate("products.product", "productName price image"); // Populating product details (optional)
 
         if (orders.length === 0) {
             return res.status(404).json({ message: "No orders found" });
@@ -62,13 +55,12 @@ export const getOrders = async (req, res) => {
 // Get a specific order by ID
 export const getOrder = async (req, res) => {
     try {
-        // Find the order by ID and ensure it is not soft deleted
-        const order = await Order.findOne({ _id: req.params.id, isDeleted: false })
+        const order = await Order.findOne({ _id: req.params.id, isDeleted: false }) // Exclude deleted order
             .populate("customer", "name email")
             .populate("products.product", "productName price image");
 
         if (!order) {
-            return res.status(404).json({ message: "Order not found or has been deleted" });
+            return res.status(404).json({ message: "Order not found" });
         }
 
         res.status(200).json({ message: "Order retrieved successfully", order });
@@ -82,20 +74,18 @@ export const updateOrderStatus = async (req, res) => {
     try {
         const { status } = req.body;
 
-        // Check if the provided status is valid
         if (!["pending", "processing", "shipped", "delivered", "cancelled"].includes(status)) {
             return res.status(400).json({ message: "Invalid status" });
         }
 
-        // Find the order by ID and ensure it is not soft deleted
         const order = await Order.findOneAndUpdate(
-            { _id: req.params.id, isDeleted: false }, // Ensure order is not deleted
+            { _id: req.params.id, isDeleted: false }, // Only update if the order is not deleted
             { status },
-            { new: true } // Return the updated order
+            { new: true } // Return the updated document
         );
 
         if (!order) {
-            return res.status(404).json({ message: "Order not found or has been deleted" });
+            return res.status(404).json({ message: "Order not found" });
         }
 
         res.status(200).json({ message: "Order status updated", order });
@@ -123,3 +113,4 @@ export const deleteOrder = async (req, res) => {
         res.status(500).json({ message: "Failed to delete order", error: error.message });
     }
 };
+
