@@ -4,7 +4,8 @@ import Product from "../models/Product.model.js"; // Importing Product model to 
 // Create a new order
 export const createOrder = async (req, res) => {
     try {
-        const { customer, products, shippingAddress } = req.body;
+        const { products, shippingAddress } = req.body;
+        const customer = req.user.id;
 
         // Validate if products array is provided and has at least one product
         if (!products || products.length === 0) {
