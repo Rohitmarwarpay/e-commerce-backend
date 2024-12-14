@@ -2,17 +2,27 @@ import Product from "../models/Product.model.js";
 
 export const createProduct = async (req, res) => {
     try {
-        const { productName, images, price, category, description } = req.body;
+        const { productName, images, price, category, description, size } = req.body;
 
         // If images is not an array, make it an array
         const imageArray = Array.isArray(images) ? images : [images];
+
+        // Set the default size to "M" if it's not provided
+        const productSize = size || "M";
+
+        // Validate the size
+        const validSizes = ["S","M", "L", "XL", "XXL"];
+        if (!validSizes.includes(productSize)) {
+            return res.status(400).json({ message: "Invalid size. Allowed sizes are S, M, L, XL, XXL." });
+        }
 
         const product = new Product({
             productName,
             images: imageArray,  // Updated field to images
             price,
             category,
-            description
+            description,
+            size: productSize,  // Ensure size is included
         });
 
         await product.save();
@@ -21,7 +31,7 @@ export const createProduct = async (req, res) => {
     } catch (error) {
         res.status(500).json({ message: "Failed to add product", error: error.message });
     }
-}
+};
 
 export const getProducts = async (req, res) => {
     try {
@@ -36,7 +46,7 @@ export const getProducts = async (req, res) => {
     } catch (error) {
         res.status(500).json({ message: "Failed to retrieve products", error: error.message });
     }
-}
+};
 
 export const getProduct = async (req, res) => {
     try {
@@ -50,14 +60,23 @@ export const getProduct = async (req, res) => {
     } catch (error) {
         res.status(500).json({ message: "Failed to retrieve product", error: error.message });
     }
-}
+};
 
 export const updateProduct = async (req, res) => {
     try {
-        const { productName, images, price, category, description } = req.body;
+        const { productName, images, price, category, description, size } = req.body;
 
         // If images is not an array, make it an array
         const imageArray = Array.isArray(images) ? images : [images];
+
+        // Validate and set the size (default to "M" if not provided)
+        const productSize = size || "M";
+
+        // Validate the size
+        const validSizes = ["S", "M", "L", "XL", "XXL"];
+        if (!validSizes.includes(productSize)) {
+            return res.status(400).json({ message: "Invalid size. Allowed sizes are M, L, XL, XXL." });
+        }
 
         // Find the product by ID and update it
         const updatedProduct = await Product.findByIdAndUpdate(
@@ -68,6 +87,7 @@ export const updateProduct = async (req, res) => {
                 price,
                 category,
                 description,
+                size: productSize,  // Update size
             },
             { new: true } // This option ensures the updated document is returned
         );
@@ -80,7 +100,7 @@ export const updateProduct = async (req, res) => {
     } catch (error) {
         res.status(500).json({ message: "Failed to update product", error: error.message });
     }
-}
+};
 
 export const deleteProduct = async (req, res) => {
     try {
@@ -94,4 +114,4 @@ export const deleteProduct = async (req, res) => {
     } catch (error) {
         res.status(500).json({ message: "Failed to delete product", error: error.message });
     }
-}
+};
