@@ -18,7 +18,7 @@ export const createProduct = async (req, res) => {
         }
 
         // Validate actualPrice
-        if (actualPrice && (actualPrice < 0 || actualPrice > price)) {
+        if (actualPrice < 0 || actualPrice > price) {
             return res.status(400).json({
                 message: "Invalid actualPrice. It must be a positive value and less than or equal to price.",
             });
@@ -89,7 +89,7 @@ export const updateProduct = async (req, res) => {
         }
 
         // Validate actualPrice
-        if (actualPrice && (actualPrice < 0 || actualPrice > price)) {
+        if (actualPrice < 0 || actualPrice > price) {
             return res.status(400).json({
                 message: "Invalid actualPrice. It must be a positive value and less than or equal to price.",
             });
