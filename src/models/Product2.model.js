@@ -26,6 +26,11 @@ const productSchema = new mongoose.Schema(
       required: true,
       min: [0, "Price must be a positive value"],
     },
+    actualPrice: {
+      type: Number,
+      min: [0, "Price must be a positive value"],
+      default:0,
+    },
     size: {
       type: String, // Single size, not an array
       enum: ["S", "M", "L", "XL", "XXL"], // Restrict values to these options
