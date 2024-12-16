@@ -1,7 +1,7 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { Validator } from "../helper/Validator.js";
-import User from "../models/User.model.js"; // Assuming you're importing the User model
+import User from "../models/User2.model.js"; // Assuming you're importing the User model
 import dotenv from "dotenv";
 
 dotenv.config({ path: "../.env" });
