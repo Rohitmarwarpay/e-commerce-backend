@@ -1,28 +1,37 @@
 import Product from "../models/Product2.model.js";
 
+// Create a new product
 export const createProduct = async (req, res) => {
     try {
-        const { productName, images, price, category, description, size } = req.body;
+        const { productName, images, price, actualPrice, category, description, size } = req.body;
 
-        // If images is not an array, make it an array
+        // If images is not an array, convert it into an array
         const imageArray = Array.isArray(images) ? images : [images];
 
-        // Set the default size to "M" if it's not provided
+        // Set the size with default value "M"
         const productSize = size || "M";
 
-        // Validate the size
-        const validSizes = ["S","M", "L", "XL", "XXL"];
+        // Validate size
+        const validSizes = ["S", "M", "L", "XL", "XXL"];
         if (!validSizes.includes(productSize)) {
             return res.status(400).json({ message: "Invalid size. Allowed sizes are S, M, L, XL, XXL." });
         }
 
+        // Validate actualPrice
+        if (actualPrice && (actualPrice < 0 || actualPrice > price)) {
+            return res.status(400).json({
+                message: "Invalid actualPrice. It must be a positive value and less than or equal to price.",
+            });
+        }
+
         const product = new Product({
             productName,
-            images: imageArray,  // Updated field to images
+            images: imageArray,
             price,
+            actualPrice: actualPrice || 0, // Default to 0 if not provided
             category,
             description,
-            size: productSize,  // Ensure size is included
+            size: productSize,
         });
 
         await product.save();
@@ -33,9 +42,9 @@ export const createProduct = async (req, res) => {
     }
 };
 
+// Retrieve all products
 export const getProducts = async (req, res) => {
     try {
-        // Find all products in the database
         const products = await Product.find();
 
         if (products.length === 0) {
@@ -48,6 +57,7 @@ export const getProducts = async (req, res) => {
     }
 };
 
+// Retrieve a single product by ID
 export const getProduct = async (req, res) => {
     try {
         const product = await Product.findById(req.params.id);
@@ -62,34 +72,42 @@ export const getProduct = async (req, res) => {
     }
 };
 
+// Update an existing product
 export const updateProduct = async (req, res) => {
     try {
-        const { productName, images, price, category, description, size } = req.body;
+        const { productName, images, price, actualPrice, category, description, size } = req.body;
 
-        // If images is not an array, make it an array
+        // If images is not an array, convert it into an array
         const imageArray = Array.isArray(images) ? images : [images];
 
-        // Validate and set the size (default to "M" if not provided)
+        // Validate and set the size
         const productSize = size || "M";
 
-        // Validate the size
         const validSizes = ["S", "M", "L", "XL", "XXL"];
         if (!validSizes.includes(productSize)) {
-            return res.status(400).json({ message: "Invalid size. Allowed sizes are M, L, XL, XXL." });
+            return res.status(400).json({ message: "Invalid size. Allowed sizes are S, M, L, XL, XXL." });
         }
 
-        // Find the product by ID and update it
+        // Validate actualPrice
+        if (actualPrice && (actualPrice < 0 || actualPrice > price)) {
+            return res.status(400).json({
+                message: "Invalid actualPrice. It must be a positive value and less than or equal to price.",
+            });
+        }
+
+        // Update the product
         const updatedProduct = await Product.findByIdAndUpdate(
             req.params.id,
             {
                 productName,
                 images: imageArray,
                 price,
+                actualPrice: actualPrice || 0,
                 category,
                 description,
-                size: productSize,  // Update size
+                size: productSize,
             },
-            { new: true } // This option ensures the updated document is returned
+            { new: true } // Return the updated document
         );
 
         if (!updatedProduct) {
@@ -102,6 +120,7 @@ export const updateProduct = async (req, res) => {
     }
 };
 
+// Delete a product
 export const deleteProduct = async (req, res) => {
     try {
         const product = await Product.findByIdAndDelete(req.params.id);
