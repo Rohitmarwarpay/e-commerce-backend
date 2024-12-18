@@ -1,8 +1,8 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { Validator } from "../helper/Validator.js";
 import User from "../models/User2.model.js"; // Assuming you're importing the User model
 import dotenv from "dotenv";
+import { Validator2 } from "../helper/Validator2.js";
 
 dotenv.config({ path: "../.env" });
 
@@ -12,7 +12,7 @@ export const registerUser = async (req, res) => {
     const { firstName, lastName, email, password } = req.body;
 
     // Validate input data
-    const validator = new Validator();
+    const validator = new Validator2();
     const { getUser, inputValidation } = validator;
     const { isInputValid, msg: inputValidationMsg } = inputValidation({
       firstName,
@@ -79,7 +79,7 @@ export const logInUser = async (req, res) => {
     const { email, password } = req.body;
 
     // Validate input data
-    const validator = new Validator();
+    const validator = new Validator2();
     const { inputValidation, getUser } = validator;
     const { isInputValid, msg: inputValidationMessage } = inputValidation({
       email,

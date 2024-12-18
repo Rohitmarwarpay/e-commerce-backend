@@ -1,6 +1,6 @@
-import User from "../models/User.model.js"; // Ensure you have the correct path and '.js' if using ES modules
+import User from "../models/User2.model.js"; // Ensure you have the correct path and '.js' if using ES modules
 
-export class Validator {
+export class Validator2 {
   /**
    * Validates input fields
    * - Fields shouldn't be empty
