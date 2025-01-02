@@ -9,6 +9,9 @@ import orderRoutes from "./src/routes/order.routes.js";
 import authRoutes2 from "./src/routes/auth2.routes.js";
 import productRoutes2 from "./src/routes/product2.routes.js";
 import orderRoutes2 from "./src/routes/order2.routes.js";
+import authRoutes5 from "./src/routes/auth5.routes.js";
+import productRoutes5 from "./src/routes/product5.routes.js";
+import orderRoutes5 from "./src/routes/order5.routes.js";
 
 dotenv.config();
 
@@ -27,6 +30,10 @@ app.use("/api/order", orderRoutes);
 app.use("/api/auth2", authRoutes2);
 app.use("/api/product2", productRoutes2);
 app.use("/api/order2", orderRoutes2);
+
+app.use("/api/auth5", authRoutes5);
+app.use("/api/product5", productRoutes5);
+app.use("/api/order5", orderRoutes5);
 
 DBConnection();
 

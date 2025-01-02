@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import Order from "../models/Order.model.js";
 import Product from "../models/Product.model.js"; // Importing Product model to get product details
 
@@ -19,7 +20,7 @@ export const createOrder = async (req, res) => {
             if (!product) {
                 return res.status(400).json({ message: `Product not found for ID: ${productItem.product}` });
             }
-            totalAmount += product.price * productItem.quantity;
+            totalAmount += product.actualPrice * productItem.quantity;
         }
 
         const newOrder = new Order({
@@ -39,9 +40,40 @@ export const createOrder = async (req, res) => {
 // Get all orders
 export const getOrders = async (req, res) => {
     try {
-        const orders = await Order.find({ isDeleted: false }) // Exclude deleted orders
-            .populate("customer", "name email") // Populating customer details (optional)
-            .populate("products.product", "productName price image"); // Populating product details (optional)
+        const userId = req.user.id; // Assuming the user ID is passed as a parameter in the URL
+
+        if (!userId) {
+            return res.status(400).json({ message: "User ID is required" });
+        }
+        const orders = await Order.aggregate([
+            { $match: { isDeleted: false, customer:new mongoose.Types.ObjectId(String(userId)) } }, // Exclude deleted orders
+            {
+                $lookup: {
+                    from: "user2", // Name of the users collection (pluralized automatically by Mongoose)
+                    localField: "customer", // Field in the orders collection
+                    foreignField: "_id", // Matching field in the user2 collection
+                    as: "userDetails", // Output array field
+                },
+            },
+            {
+                $unwind: {
+                    path: "$userDetails", // Convert the array to an object if there's exactly one user per order
+                    preserveNullAndEmptyArrays: true, // Keep orders without matching user details
+                },
+            },
+            {
+                $project: {
+                    _id: 1,
+                    "userDetails.firstName": 1, // Include specific fields from userDetails
+                    "userDetails.email": 1, // Include email from userDetails
+                    products: 1, // Include products array
+                    totalAmount: 1, // Include totalAmount
+                    shippingAddress: 1,
+                    paymentStatus: 1,
+                    status: 1
+                },
+            },
+        ]);
 
         if (orders.length === 0) {
             return res.status(404).json({ message: "No orders found" });

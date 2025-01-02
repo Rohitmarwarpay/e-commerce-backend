@@ -4,14 +4,14 @@ const orderSchema = new mongoose.Schema(
     {
         customer: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: "User2", // Assuming you have a "User" model for customer details
+            ref: "User5", // Assuming you have a "User" model for customer details
             required: true,
         },
         products: [
             {
                 product: {
                     type: mongoose.Schema.Types.ObjectId,
-                    ref: "Product2", // Referring to the Product model
+                    ref: "Product5", // Referring to the Product model
                     required: true,
                 },
                 quantity: {
@@ -54,6 +54,6 @@ const orderSchema = new mongoose.Schema(
     }
 );
 
-const Order = mongoose.model("Order2", orderSchema);
+const Order = mongoose.model("Order5", orderSchema);
 
 export default Order;

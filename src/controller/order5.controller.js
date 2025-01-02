@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
-import Order from "../models/Order2.model.js";
-import Product from "../models/Product2.model.js"; // Importing Product model to get product details
+import Order from "../models/Order5.model.js";
+import Product from "../models/Product5.model.js"; // Importing Product model to get product details
 
 // Create a new order
 export const createOrder = async (req, res) => {
