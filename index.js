@@ -12,6 +12,15 @@ import orderRoutes2 from "./src/routes/order2.routes.js";
 import authRoutes5 from "./src/routes/auth5.routes.js";
 import productRoutes5 from "./src/routes/product5.routes.js";
 import orderRoutes5 from "./src/routes/order5.routes.js";
+import authRoutes3 from "./src/routes/auth3.routes.js";
+import productRoutes3 from "./src/routes/product3.routes.js";
+import orderRoutes3 from "./src/routes/order3.routes.js";
+import authRoutes4 from "./src/routes/auth4.routes.js";
+import productRoutes4 from "./src/routes/product4.routes.js";
+import orderRoutes4 from "./src/routes/order4.routes.js";
+import authRoutes6 from './src/routes/auth6.routes.js';
+import productRoutes6 from './src/routes/product6.routes.js';
+import orderRoutes6 from './src/routes/order6.routes.js';
 
 dotenv.config();
 
@@ -31,9 +40,21 @@ app.use("/api/auth2", authRoutes2);
 app.use("/api/product2", productRoutes2);
 app.use("/api/order2", orderRoutes2);
 
+app.use("/api/auth3", authRoutes3);
+app.use("/api/product3", productRoutes3);
+app.use("/api/order3", orderRoutes3);
+
+app.use("/api/auth4", authRoutes4);
+app.use("/api/product4", productRoutes4);
+app.use("/api/order4", orderRoutes4);
+
 app.use("/api/auth5", authRoutes5);
 app.use("/api/product5", productRoutes5);
 app.use("/api/order5", orderRoutes5);
+
+app.use("/api/auth6", authRoutes6);
+app.use("/api/product6", productRoutes6);
+app.use("/api/order6", orderRoutes6);
 
 DBConnection();
 

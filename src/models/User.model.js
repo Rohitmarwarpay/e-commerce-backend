@@ -26,7 +26,7 @@ userSchema.methods.createAccessToken = function () {
   return jwt.sign(
     { id: this._id, email: this.email },
     process.env.SECRET_KEY,
-    { expiresIn: "1h" } // Short-lived
+    { expiresIn: "1d" } // Short-lived
   );
 };
 

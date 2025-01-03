@@ -55,6 +55,6 @@ userSchema.statics.refreshAccessToken = function (refreshToken) {
   }
 };
 
-const User = mongoose.model("User2", userSchema);
+const User = mongoose.model("User6", userSchema);
 
 export default User;
